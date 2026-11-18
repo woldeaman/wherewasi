@@ -3,14 +3,14 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "photometa"
+name = "wherewasi"
 version = "0.1.0"
 description = "Personal tool for repairing photo metadata (GPS inference, GPX tracks)"
 requires-python = ">=3.9"
 dependencies = []
 
 [project.scripts]
-photometa = "photometa.cli:main"
+wherewasi = "wherewasi.cli:main"
 
 [tool.setuptools]
-packages = ["photometa"]
+packages = ["wherewasi"]

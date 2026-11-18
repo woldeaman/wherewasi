@@ -1,4 +1,4 @@
-# photometa
+# WhereWasI
 
 A small personal tool I built to repair the metadata of my own photo library:
 mostly missing or wrong GPS and capture times. Fully local, read-only: it never
@@ -25,7 +25,7 @@ exiftool -r -n -json -ext heic -ext heif -ext jpg -ext jpeg -ext png -ext dng -e
 ## 2. Build a track between two photos
 
 ```sh
-python3 -m photometa track photos.json IMG_1234.HEIC IMG_2345.HEIC -o trip.gpx
+python3 -m wherewasi track photos.json IMG_1234.HEIC IMG_2345.HEIC -o trip.gpx
 ```
 
 Photos can be given as a bare filename or, if the name is ambiguous, with more of

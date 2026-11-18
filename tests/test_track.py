@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from datetime import datetime, timezone
 
-from photometa.cli import main
-from photometa.loader import TZ_GPS, TZ_OFFSET, TZ_UNKNOWN, TZ_UTC, dedupe, normalise
-from photometa.track import TrackError, find_photo, select_between, to_gpx
+from wherewasi.cli import main
+from wherewasi.loader import TZ_GPS, TZ_OFFSET, TZ_UNKNOWN, TZ_UTC, dedupe, normalise
+from wherewasi.track import TrackError, find_photo, select_between, to_gpx
 
 RECORDS = [
     # Okinawa, offset tag present

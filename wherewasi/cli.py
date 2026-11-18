@@ -1,4 +1,4 @@
-"""Command-line interface: `python -m photometa <command> ...`."""
+"""Command-line interface: `python -m wherewasi <command> ...`."""
 from __future__ import annotations
 
 import argparse
@@ -56,7 +56,7 @@ def cmd_not_implemented(args) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="photometa",
+        prog="wherewasi",
         description="Repair photo metadata (reads an exiftool JSON export).",
     )
     sub = parser.add_subparsers(dest="command", required=True)

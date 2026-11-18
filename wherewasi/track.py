@@ -59,7 +59,7 @@ def select_between(photos: Sequence[Photo], start: Photo, end: Photo) -> List[Ph
 def to_gpx(points: Sequence[Photo], name: str) -> str:
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        '<gpx version="1.1" creator="photometa" xmlns="http://www.topografix.com/GPX/1/1">',
+        '<gpx version="1.1" creator="wherewasi" xmlns="http://www.topografix.com/GPX/1/1">',
         f"  <trk><name>{escape(name)}</name><trkseg>",
     ]
     for p in points:

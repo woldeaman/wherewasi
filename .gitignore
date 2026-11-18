@@ -9,3 +9,6 @@ dist/
 *.json
 *.gpx
 *.csv
+
+# MacOS tmp files
+.DS_Store
