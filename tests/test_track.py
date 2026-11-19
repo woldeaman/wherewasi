@@ -133,7 +133,6 @@ class CliTest(unittest.TestCase):
             self.assertEqual(gpx.count("<trkpt"), 5)  # IMG_0005 now included via default tz
 
     def test_placeholders(self):
-        self.assertEqual(main(["infer", "x.json"]), 2)
         self.assertEqual(main(["evaluate", "x.json"]), 2)
 
 

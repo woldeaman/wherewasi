@@ -4,9 +4,10 @@ from __future__ import annotations
 import argparse
 import sys
 from collections import Counter
-from datetime import tzinfo
+from datetime import timedelta, tzinfo
 from typing import List, Optional
 
+from . import infer as infer_mod
 from .loader import TZ_UNKNOWN, load, parse_offset
 from .track import TrackError, find_photo, select_between, to_gpx
 
@@ -49,6 +50,28 @@ def cmd_track(args) -> int:
     return 0
 
 
+def cmd_infer(args) -> int:
+    photos = load(args.photos_json, args.default_tz)
+    max_gap = timedelta(hours=args.max_gap) if args.max_gap > 0 else None
+    suggestions, skipped = infer_mod.infer(photos, args.method, max_gap)
+    with open(args.output, "w", encoding="utf-8", newline="") as f:
+        infer_mod.write_csv(suggestions, f)
+
+    methods = Counter(s.method for s in suggestions)
+    print(f"{len(suggestions)} GPS suggestions for photos without GPS")
+    if methods:
+        print("method: " + ", ".join(f"{k}={v}" for k, v in sorted(methods.items())))
+    no_tz = sum(1 for p in skipped if p.time_utc is None)
+    if no_tz:
+        print(f"warning: {no_tz} photos skipped (time zone unknown); "
+              f"see --default-tz", file=sys.stderr)
+    if len(skipped) > no_tz:
+        print(f"warning: {len(skipped) - no_tz} photos skipped "
+              f"(no GPS photo within --max-gap)", file=sys.stderr)
+    print(f"Written {args.output}")
+    return 0
+
+
 def cmd_not_implemented(args) -> int:
     print(f"'{args.command}' is not implemented yet.", file=sys.stderr)
     return 2
@@ -75,9 +98,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--name", help="track name (default: '<start> – <end>')")
     p.set_defaults(func=cmd_track)
 
-    p = sub.add_parser("infer", help="[not implemented] suggest GPS for photos without it")
+    p = sub.add_parser("infer", help="CSV of GPS suggestions for photos without GPS")
     common(p)
-    p.set_defaults(func=cmd_not_implemented)
+    p.add_argument("-o", "--output", default="suggestions.csv",
+                   help="output CSV (default: suggestions.csv)")
+    p.add_argument("--method", choices=infer_mod.METHODS, default=infer_mod.INTERPOLATE,
+                   help="inference method (default: interpolate)")
+    p.add_argument("--max-gap", type=float, default=24, metavar="HOURS",
+                   help="skip photos further than this from any GPS photo; "
+                        "0 = no limit (default: 24)")
+    p.set_defaults(func=cmd_infer)
 
     p = sub.add_parser("evaluate", help="[not implemented] leave-one-out error vs. time gap")
     common(p)
