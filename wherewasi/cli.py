@@ -7,6 +7,7 @@ from collections import Counter
 from datetime import timedelta, tzinfo
 from typing import List, Optional
 
+from . import evaluate as evaluate_mod
 from . import infer as infer_mod
 from .loader import TZ_UNKNOWN, load, parse_offset
 from .track import TrackError, find_photo, select_between, to_gpx
@@ -72,9 +73,20 @@ def cmd_infer(args) -> int:
     return 0
 
 
-def cmd_not_implemented(args) -> int:
-    print(f"'{args.command}' is not implemented yet.", file=sys.stderr)
-    return 2
+def cmd_evaluate(args) -> int:
+    photos = load(args.photos_json, args.default_tz)
+    results = evaluate_mod.leave_one_out(photos)
+    if not results:
+        print("error: need at least two GPS photos with a known time zone", file=sys.stderr)
+        return 1
+    tested = len({r.photo.source_file for r in results})
+    print(f"Leave-one-out over {tested} GPS photos (error in metres)\n")
+    print(evaluate_mod.format_table(evaluate_mod.summarise(results)))
+    skipped = sum(1 for p in photos if p.has_gps and p.time_utc is None)
+    if skipped:
+        print(f"\nwarning: {skipped} GPS photos skipped (time zone unknown); "
+              f"see --default-tz", file=sys.stderr)
+    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -109,9 +121,9 @@ def build_parser() -> argparse.ArgumentParser:
                         "0 = no limit (default: 24)")
     p.set_defaults(func=cmd_infer)
 
-    p = sub.add_parser("evaluate", help="[not implemented] leave-one-out error vs. time gap")
+    p = sub.add_parser("evaluate", help="leave-one-out error vs. time gap, per method")
     common(p)
-    p.set_defaults(func=cmd_not_implemented)
+    p.set_defaults(func=cmd_evaluate)
 
     return parser
 

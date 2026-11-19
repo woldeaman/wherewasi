@@ -132,9 +132,6 @@ class CliTest(unittest.TestCase):
                 gpx = f.read()
             self.assertEqual(gpx.count("<trkpt"), 5)  # IMG_0005 now included via default tz
 
-    def test_placeholders(self):
-        self.assertEqual(main(["evaluate", "x.json"]), 2)
-
 
 if __name__ == "__main__":
     unittest.main()
