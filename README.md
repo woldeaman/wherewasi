@@ -98,3 +98,7 @@ Also: 0/0 coordinates are treated as "no GPS", and copies of the same shot
 ```sh
 python3 -m unittest discover -v
 ```
+
+## License
+
+[GNU Affero General Public License v3.0 or later](LICENSE) (AGPL-3.0-or-later).
